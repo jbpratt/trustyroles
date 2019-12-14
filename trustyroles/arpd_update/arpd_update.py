@@ -1,3 +1,6 @@
+"""
+trustroles.arpd_update supplies various methods for interacting with assume role policy documents
+"""
 import json
 import logging
 import argparse
@@ -87,7 +90,7 @@ def _main():
             role_name=args['update_role']
         )
 
-def get_arpd(role_name, json_flag=False):
+def get_arpd(role_name: str, json_flag: bool = False) -> str:
     """The get_arpd method takes in a role_name as a string
         and provides trusted ARNS and Conditions."""
     iam_client = boto3.client('iam')
@@ -107,13 +110,12 @@ def get_arpd(role_name, json_flag=False):
         if ardp['Statement'][0]['Condition']:
             print(f"  {ardp['Statement'][0]['Condition']}")
 
-def add_external_id(external_id, role_name):
+def add_external_id(external_id: str, role_name: str) -> None:
     """The add_external_id method takes an external_id and role_name as strings
         to allow the addition of an externalId condition."""
     iam_client = boto3.client('iam')
     role = iam_client.get_role(RoleName=role_name)
     ardp = role['Role']['AssumeRolePolicyDocument']
-    
     ardp['Statement'][0]['Condition'] = {'StringEquals': {'sts:ExternalId': external_id}}
 
     try:
@@ -126,7 +128,7 @@ def add_external_id(external_id, role_name):
     except ClientError as error:
         print(error)
 
-def remove_external_id(role_name):
+def remove_external_id(role_name: str) -> None:
     """The remove_external_id method takes a role_name as a string
         to allow the removal of an externalId condition."""
     iam_client = boto3.client('iam')
@@ -145,7 +147,7 @@ def remove_external_id(role_name):
     except ClientError as error:
         print(error)
 
-def update_arn(arn_list, role_name):
+def update_arn(arn_list: list, role_name: str) -> None:
     """The update_arn method takes a list of ARNS(arn_list) and a role_name
         to add to trust policy of suppplied role."""
     iam_client = boto3.client('iam')
@@ -175,7 +177,7 @@ def update_arn(arn_list, role_name):
     except ClientError as error:
         print(error)
 
-def remove_arn(arn_list, role_name):
+def remove_arn(arn_list: list, role_name: str) -> None:
     """The remove_arn method takes in a string or list of ARNs and a role_name
         to remove ARNS from trust policy of supplied role."""
     iam_client = boto3.client('iam')
